@@ -16,7 +16,7 @@ and retrieve relevant user information.
  - __User Details:__ Displays user details including username,
 profile picture, bio, and some of their repositories.
 
- - __ Repository Details:__ Provides detailed information
+ - __Repository Details:__ Provides detailed information
 about a selected repository, such as the last commit date,
 creation date, description, and the last 5 commit descriptions.
 
