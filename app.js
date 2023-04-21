@@ -73,4 +73,4 @@ const port = 3001; // or any other desired port number
 //  console.log(`Server is running on port ${port}`);
 //});
 
-export default app.listen(3000);
+export default app.listen(port);
