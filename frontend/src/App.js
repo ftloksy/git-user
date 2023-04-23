@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import GitUser from './components/GitUser';
+import SearchGit from './components/SearchGit';
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
 
-        <GitUser />
+        <SearchGit />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>

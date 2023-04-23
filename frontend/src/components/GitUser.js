@@ -18,20 +18,22 @@ class GitUser extends Component {
       gitUsername: null,
       resposDetail: null,
       repositories: [],
-      lastCommits: []
+      lastCommits: [],
+      gitUser: this.props.gitUser
     };
     
     this.showName = this.showName.bind(this);
   };
 
   componentDidMount() {
+    const { gitUser } = this.state;
     
     /**
      * Fetch the image from the Express server
      * Fetches the image from the URL passed as a prop
      */
 
-    fetch('/api/users/ftloksy')
+    fetch('/api/users/' + gitUser )
       // Converts the response to a Blob object
     .then(response => response.json())
     .then(user => {
@@ -44,7 +46,7 @@ class GitUser extends Component {
       console.log( this.state.imageurl );
     });
 
-    fetch('/api/users/ftloksy/details')
+    fetch('/api/users/' + gitUser + '/details')
     .then(response => response.json()
       .then(json => {
         console.log(json);     
@@ -53,7 +55,7 @@ class GitUser extends Component {
         });
         return json.repositories[0].name;
       })
-    ).then((name) => fetch('/api/users/ftloksy/repos/' + name )
+    ).then((name) => fetch('/api/users/' + gitUser + '/repos/' + name )
       .then(response => response.json()
         .then(json => {
           console.log("reposDatil: ");
@@ -79,8 +81,12 @@ class GitUser extends Component {
 
   showName(name) {
 
+    const { gitUser } = this.state;
+
+    console("showName: " + '/api/users/' + gitUser + '/repos/' + name);
+
     setTimeout(() => {
-      fetch('/api/users/ftloksy/repos/' + name)
+      fetch('/api/users/' + gitUser + '/repos/' + name)
       .then(response => response.json()
         .then(json => {
           console.log("reposDatil: ");
