@@ -1,4 +1,4 @@
-/*
+/**
  * This is a React component called CarImage 
  * that fetches an image from a server 
  * and displays it as an <img> element in the rendered UI. 
@@ -16,9 +16,12 @@ class GitUser extends Component {
       imageurl: null,
       bio: null,
       gitUsername: null,
-      repositories: []
+      resposDetail: null,
+      repositories: [],
+      lastCommits: []
     };
     
+    this.showName = this.showName.bind(this);
   };
 
   componentDidMount() {
@@ -43,29 +46,88 @@ class GitUser extends Component {
 
     fetch('/api/users/ftloksy/details')
     .then(response => response.json()
-                    .then(json => {
-                        console.log("Repositorise: ");
-                        console.log(json.repositories); 
-                        this.setState({
-                          repositories: json.repositories
-                        });
-                    })
-            );
+      .then(json => {
+        console.log(json);     
+        this.setState({
+          repositories: json.repositories
+        });
+        return json.repositories[0].name;
+      })
+    ).then((name) => fetch('/api/users/ftloksy/repos/' + name )
+      .then(response => response.json()
+        .then(json => {
+          console.log("reposDatil: ");
+          console.log(json);
+          this.setState({
+            resposDetail: json,
+            lastCommits: this.getLastFiveItem(json.commits)
+          });
+        })
+      )
+    )
+  }
+
+  getLastFiveItem(paramArray) {
+    const arrayLength = paramArray.length;
+    if (arrayLength >= 5) {
+      const lastFiveItems = paramArray.slice(arrayLength - 5, arrayLength);
+      return lastFiveItems;
+    } else {
+      return paramArray;
+    }
+  }
+
+  showName(name) {
+
+    setTimeout(() => {
+      fetch('/api/users/ftloksy/repos/' + name)
+      .then(response => response.json()
+        .then(json => {
+          console.log("reposDatil: ");
+          console.log(json);
+          this.setState({
+            resposDetail: json,
+            lastCommits: this.getLastFiveItem(json.commits)
+          });
+        })
+      )
+    }, 3000)
   }
 
   render() {
-    const { imageurl, bio, gitUsername, repositories } = this.state;
+    const { imageurl, bio, gitUsername, 
+        repositories, resposDetail, lastCommits } = this.state;
 
     return (
       <div>
         <h1>{ gitUsername }</h1>
         <ProfileImage urlsrc={ imageurl } />
         <p>{ bio }</p>
-        <ul>
-          {repositories.map(repo => (
-            <li>{repo.name}</li>
-          ))}
-        </ul>
+        <div id="respo">
+          <div id="respoBar">
+            <ul>
+              {repositories.map(repo => (
+                <li key={repo.name}><button onClick={() => this.showName(repo.name)}>{repo.name}</button></li>
+              ))}
+            </ul>
+          </div>
+          <div id="respoDetail">
+          {resposDetail ? (
+            <>
+              <h2>Name: {resposDetail.name}</h2>
+              <h3>Create At: {resposDetail.created_at}</h3>
+              <h3>Last commit date: {resposDetail.last_commit_date}</h3>
+              <p>Description: {resposDetail.description}</p>
+              <h3>Last Commit:</h3>
+              <ul>
+                {lastCommits.map(commit => (
+                  <li>{commit.description}</li>
+                ))}
+              </ul>
+            </>
+            ) : null }
+          </div>
+        </div>
       </div>
     );
   }
