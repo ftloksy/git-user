@@ -1,9 +1,7 @@
+
 /*
- * This is a React component called CarImage 
  * that fetches an image from a server 
  * and displays it as an <img> element in the rendered UI. 
- * Let's go through the code 
- * and add comments to explain what each part does:
  */
 import React, { Component } from 'react';
 import Loading from './Loading';

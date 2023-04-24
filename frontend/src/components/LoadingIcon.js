@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 
+// LoadingIcon component
 class LoadingIcon extends Component {
   render() {
     const { step } = this.props;
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" viewBox="0 0 500 500">
           <g fill="#aaa" transform="translate(151.625,1010.25)">
+
+            {/* Loading Effect, every six step be a circle. */}
             {( step % 6 ) >= 0 && (
                 <path d="m85.511-1010.2c-82.584,4.1917-154.6,48.523-196.98, 113.89l85.781,49.607c24.978-35.605,65.228-59.679,111.23-62.677v-100.82c-0.01043,0.0005-0.02094-0.0006-0.03137,0z">
                 </path>

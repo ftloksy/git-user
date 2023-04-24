@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Footer.css';
+import '../css/Footer.css';
 
 /**
  * The footer section of the application

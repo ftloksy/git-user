@@ -1,0 +1,4 @@
+/* different coloured links for links that go outside */
+a.outsidelink {
+  color: hotpink;
+}

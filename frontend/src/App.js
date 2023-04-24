@@ -1,5 +1,5 @@
 import logo from './svg/github.svg';
-import './App.css';
+import './css/App.css';
 import GitUserRoute from './pages/GitUserRoute';
 import Footer from './pages/Footer';
 

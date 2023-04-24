@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import GitUser from './GitUser';
 
@@ -5,21 +6,22 @@ class SearchGit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: '',
-      gitUser: null
+      inputValue: '', // State to hold input value
+      gitUser: null // State to hold GitUser component
     };
   }
 
   handleInputChange = (e) => {
+    // Update inputValue state with input value
     this.setState({ inputValue: e.target.value });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     const { inputValue } = this.state;
-    // Do something with the form data, e.g. submit to a server
     this.setState({ gitUser: null }, async () => {
       await this.setState({
+        // Update gitUser state with GitUser component passing inputValue as prop
         gitUser: <GitUser gitUser={ inputValue } />
       });
     });

@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
 import ProfileImage from './ProfileImage';
-import Loading from './Loading';
-
+import '../css/GitUser.css';
 
 class GitUser extends Component {
   constructor(props) {
     super(props);
     
     this.state = {
-      imageurl: null,
+      imageurl: null, // profile picture's url
       bio: null,
 
       // A boolean to show or hide the loading spinner
@@ -23,7 +20,6 @@ class GitUser extends Component {
       gitUserHomepage: "https://github.com/" + this.props.gitUser
     };
     
-    //this.showName = this.showName.bind(this);
   };
 
   componentDidMount() {
@@ -31,6 +27,7 @@ class GitUser extends Component {
 
     this.mountTimeout = setTimeout(() => {
     
+      // Fetch user data after 3 seconds
       fetch('/api/users/' + gitUser )
       .then(response => {
    
@@ -46,6 +43,7 @@ class GitUser extends Component {
           throw new Error(user.error);
         }
         
+        // Update state with user data
         this.setState({ 
           imageurl: user.avatar_url,
           bio: user.bio,
@@ -79,14 +77,16 @@ class GitUser extends Component {
       <div>
         <h1>
           <a 
-            className="gituserhome"
+            className="outsidelink"
             href={gitUserHomepage}>
               { gitUsername }
           </a>
         </h1>
+        {/* Profile Picture */}
         <ProfileImage urlsrc={ imageurl } />
         <p>{ bio }</p>
-        <Link to={gitUserDetailLink}>{gitUser} Detail</Link>
+        {/* clicking on should go to user details page. */}
+        <a href={gitUserDetailLink}>{gitUser} Detail</a>
       </div>
       )}
       </>
