@@ -1,12 +1,9 @@
-/**
- * This is a React component called CarImage 
- * that fetches an image from a server 
- * and displays it as an <img> element in the rendered UI. 
- * Let's go through the code 
- * and add comments to explain what each part does:
- */
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import ProfileImage from './ProfileImage';
+import Loading from './Loading';
+
 
 class GitUser extends Component {
   constructor(props) {
@@ -15,126 +12,84 @@ class GitUser extends Component {
     this.state = {
       imageurl: null,
       bio: null,
+
+      // A boolean to show or hide the loading spinner
+      loadingShow: false,
+
       gitUsername: null,
-      resposDetail: null,
-      repositories: [],
-      lastCommits: [],
-      gitUser: this.props.gitUser
+      errorMessage: null,
+      gitUser: this.props.gitUser,
+      gitUserDetailLink: "/userdetail/" + this.props.gitUser,
+      gitUserHomepage: "https://github.com/" + this.props.gitUser
     };
     
-    this.showName = this.showName.bind(this);
+    //this.showName = this.showName.bind(this);
   };
 
   componentDidMount() {
     const { gitUser } = this.state;
+
+    this.mountTimeout = setTimeout(() => {
     
-    /**
-     * Fetch the image from the Express server
-     * Fetches the image from the URL passed as a prop
-     */
-
-    fetch('/api/users/' + gitUser )
-      // Converts the response to a Blob object
-    .then(response => response.json())
-    .then(user => {
-      console.log(user);
-      this.setState({ 
-        imageurl: user.avatar_url,
-        bio: user.bio,
-        gitUsername: user.name 
-      });
-      console.log( this.state.imageurl );
-    });
-
-    fetch('/api/users/' + gitUser + '/details')
-    .then(response => response.json()
-      .then(json => {
-        console.log(json);     
-        this.setState({
-          repositories: json.repositories
-        });
-        return json.repositories[0].name;
+      fetch('/api/users/' + gitUser )
+      .then(response => {
+   
+        if (!response) {
+          throw new Error("Cannot give information from github.com .");
+        }
+        return response.json();
+        
       })
-    ).then((name) => fetch('/api/users/' + gitUser + '/repos/' + name )
-      .then(response => response.json()
-        .then(json => {
-          console.log("reposDatil: ");
-          console.log(json);
-          this.setState({
-            resposDetail: json,
-            lastCommits: this.getLastFiveItem(json.commits)
-          });
-        })
-      )
-    )
+      .then(user => {
+        
+        if (user.error) {
+          throw new Error(user.error);
+        }
+        
+        this.setState({ 
+          imageurl: user.avatar_url,
+          bio: user.bio,
+          gitUsername: user.name 
+        });
+      })
+      .catch(error => {
+        this.setState({
+          errorMessage: 'Fetch error: ' + error
+        });
+      });
+    }, 3000);
+
   }
 
-  getLastFiveItem(paramArray) {
-    const arrayLength = paramArray.length;
-    if (arrayLength >= 5) {
-      const lastFiveItems = paramArray.slice(arrayLength - 5, arrayLength);
-      return lastFiveItems;
-    } else {
-      return paramArray;
-    }
-  }
+  componentWillUnmount() {
 
-  showName(name) {
-
-    const { gitUser } = this.state;
-
-    console("showName: " + '/api/users/' + gitUser + '/repos/' + name);
-
-    setTimeout(() => {
-      fetch('/api/users/' + gitUser + '/repos/' + name)
-      .then(response => response.json()
-        .then(json => {
-          console.log("reposDatil: ");
-          console.log(json);
-          this.setState({
-            resposDetail: json,
-            lastCommits: this.getLastFiveItem(json.commits)
-          });
-        })
-      )
-    }, 3000)
+    // Clear the fetch and loading timeout
+    clearTimeout(this.mountTimeout);
   }
 
   render() {
-    const { imageurl, bio, gitUsername, 
-        repositories, resposDetail, lastCommits } = this.state;
+    const { imageurl, bio, gitUser, gitUserHomepage,
+      gitUsername, gitUserDetailLink, errorMessage } = this.state;
 
     return (
+    <>
+    { errorMessage ? (
+      <h1>{errorMessage}</h1>
+      ): ( 
       <div>
-        <h1>{ gitUsername }</h1>
+        <h1>
+          <a 
+            className="gituserhome"
+            href={gitUserHomepage}>
+              { gitUsername }
+          </a>
+        </h1>
         <ProfileImage urlsrc={ imageurl } />
         <p>{ bio }</p>
-        <div id="respo">
-          <div id="respoBar">
-            <ul>
-              {repositories.map(repo => (
-                <li key={repo.name}><button onClick={() => this.showName(repo.name)}>{repo.name}</button></li>
-              ))}
-            </ul>
-          </div>
-          <div id="respoDetail">
-          {resposDetail ? (
-            <>
-              <h2>Name: {resposDetail.name}</h2>
-              <h3>Create At: {resposDetail.created_at}</h3>
-              <h3>Last commit date: {resposDetail.last_commit_date}</h3>
-              <p>Description: {resposDetail.description}</p>
-              <h3>Last Commit:</h3>
-              <ul>
-                {lastCommits.map(commit => (
-                  <li>{commit.description}</li>
-                ))}
-              </ul>
-            </>
-            ) : null }
-          </div>
-        </div>
+        <Link to={gitUserDetailLink}>{gitUser} Detail</Link>
       </div>
+      )}
+      </>
     );
   }
 }

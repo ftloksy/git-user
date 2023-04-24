@@ -1,26 +1,16 @@
-import logo from './logo.svg';
+import logo from './svg/github.svg';
 import './App.css';
-import SearchGit from './components/SearchGit';
+import GitUserRoute from './pages/GitUserRoute';
+import Footer from './pages/Footer';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-
-        <SearchGit />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <GitUserRoute />
       </header>
+      <Footer />
     </div>
   );
 }

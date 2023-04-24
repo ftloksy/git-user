@@ -6,6 +6,7 @@
  * and add comments to explain what each part does:
  */
 import React, { Component } from 'react';
+import Loading from './Loading';
 
 class ProfileImage extends Component {
   constructor(props) {
@@ -21,19 +22,25 @@ class ProfileImage extends Component {
      * Fetch the image from the Express server
      * Fetches the image from the URL passed as a prop
      */
-    setTimeout( () => {
+    this.waitFetchTimeout = setTimeout( () => { 
       fetch(this.props.urlsrc)
     
       // Converts the response to a Blob object
       .then(response => response.blob())
       .then(blob => {
+  
         // Sets the Blob URL as the image source in the component's state
         this.setState({ imageSrc: URL.createObjectURL(blob) });
       })
       .catch(error => {
         console.error('Failed to fetch image:', error);
       });
-     }, 3000 );
+
+    }, 5000 );
+  }
+  
+  componentWillUnmount() {
+    clearTimeout(this.waitFetchTimeout);
   }
 
   render() {
@@ -44,7 +51,7 @@ class ProfileImage extends Component {
         {imageSrc ? (
           <img src={imageSrc} alt="Example" />
         ) : (
-          <p>Loading image...</p>
+          <Loading loadingShow={!imageSrc} />
         )}
       </div>
     );
@@ -52,4 +59,3 @@ class ProfileImage extends Component {
 }
 
 export default ProfileImage;
-

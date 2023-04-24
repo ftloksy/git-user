@@ -1,9 +1,17 @@
 // Import required modules
 import express from 'express';
 import axios from 'axios';
+import helmet from 'helmet';
 
 // Create an instance of Express app
 const app = express();
+
+/**
+ * Adding middleware: The helmet() middleware is used
+ * to enhance the security of the Express app
+ * by setting various HTTP headers.
+ */
+app.use(helmet());
 
 // Define routes
 
@@ -68,9 +76,6 @@ app.get('/api/users/:username/repos/:repoName', async (req, res) => {
 });
 
 // Start the Express app
-const port = 3001; // or any other desired port number
-//app.listen(port, () => {
-//  console.log(`Server is running on port ${port}`);
-//});
+const port = 3001; 
 
 export default app.listen(port);
